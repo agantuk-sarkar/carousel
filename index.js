@@ -1,59 +1,95 @@
-let imageArr = JSON.parse(localStorage.getItem("array_image6")) || [];
+// array for localStorage
+let arr = JSON.parse(localStorage.getItem("indicator2")) || [];
 
+let submitForm = document.querySelector("#submit-form");
 let inputTag = document.getElementById("imageUrl");
-
-// Pushing image urls into an array by submit event
-let submitForm = document.getElementById("submit-form");
+// Form event
 submitForm.addEventListener("submit", function (event) {
   event.preventDefault();
 
-  imageArr.push(inputTag.value);
-  inputTag.value = null;
-
-  localStorage.setItem("array_image6", JSON.stringify(imageArr));
+  if (inputTag === "") {
+    alert("Enter Image URL");
+  } else {
+    arr.push(inputTag.value);
+    inputTag.value = null;
+  }
+  localStorage.setItem("indicator2", JSON.stringify(arr));
 });
 
-// Carousel image
-let carouselContainer = document.querySelector(".carousel-container");
-let startButton = document.querySelector(".start-button");
-let stopButton = document.querySelector(".stop-button");
+// currentIndex for all images
+let currentIndex = 0;
+// Interval id for event loop
+let intervalId = null;
 
-let id = null;
+// Fetching all the elements in html into js
+let carouselImageContainer = document.querySelector(
+  ".carousel-image-container"
+);
+let leftArrow = document.querySelector(".left-arrow");
+let rightArrow = document.querySelector(".right-arrow");
+let indicatorContainer = document.querySelector(".indicator-container");
 
-startButton.addEventListener("click", function () {
-  clearInterval(id);
-  // carouselContainer.innerHTML = "";
-  // carouselContainer.innerHTML = null;
-  // imageDiv.innerHTML = "";
+// left arrow button function
+leftArrow.addEventListener("click", function () {
+  currentIndex--;
+  if (currentIndex < 0) {
+    currentIndex = arr.length - 1;
+  }
+  carouselImage(currentIndex);
+});
 
-  // let imageTag = document.createElement("img");
-  // imageTag.setAttribute("class", "w-full h-full");
-  let imageDiv = document.createElement("div");
+// right arrow button function
+rightArrow.addEventListener("click", function () {
+  currentIndex++;
+  if (currentIndex === arr.length) {
+    currentIndex = 0;
+  }
+  carouselImage(currentIndex);
+});
 
-  let imageTag = document.createElement("img");
+// using higher order function to create multiple span tag
+arr.forEach(function (ele, ind) {
+  let spanTag = document.createElement("span");
+  let iTag = document.createElement("i");
+  iTag.setAttribute("class", "lni lni-circle-minus bg-cyan-300");
+  spanTag.setAttribute(
+    "class",
+    "w-[1rem] text-sm hover:text-white cursor-pointer"
+  );
+  spanTag.addEventListener("click", function () {
+    indicatorFunc(ind);
+  });
+  spanTag.append(iTag);
+  indicatorContainer.append(spanTag);
+});
 
-  // imageTag.src = imageArr[0];
+// Indicator function
+function indicatorFunc(indicatorIndex) {
+  carouselImage(indicatorIndex);
+  currentIndex = indicatorIndex;
+}
 
-  // imageDiv.append(imageTag);
-  // carouselContainer.append(imageDiv);
-  let currentIndex = 0;
+// carousel image function for showing images in UI
+function carouselImage(index) {
+  clearInterval(intervalId);
+  carouselImageContainer.innerHTML = null;
+  let imgTag = document.createElement("img");
+  imgTag.src = arr[index];
+  imgTag.setAttribute("class", "w-full h-full");
+  carouselImageContainer.append(imgTag);
 
-  id = setInterval(function () {
-    if (currentIndex === imageArr.length) {
+  // applying setInterval
+  intervalId = setInterval(function () {
+    carouselImageContainer.innerHTML = null;
+    if (currentIndex === arr.length) {
+      index = 0;
       currentIndex = 0;
-      console.log("currentIndex2:", currentIndex);
-      console.log("arrayLength:", imageArr.length);
     }
-    imageTag.src = imageArr[currentIndex];
-    imageDiv.append(imageTag);
-    carouselContainer.append(imageDiv);
+    let imageTag = document.createElement("img");
+    imageTag.src = arr[currentIndex];
+    imageTag.setAttribute("class", "w-full h-full");
+    carouselImageContainer.append(imageTag);
     currentIndex++;
-    // console.log("currentIndex:", currentIndex);
-    // console.log("imageArray:", imageArr);
-  }, 2000);
-});
-// console.log("currentIndex2:", currentIndex);
-
-stopButton.addEventListener("click", function () {
-  clearInterval(id);
-});
+  }, 3000);
+}
+carouselImage(currentIndex);
