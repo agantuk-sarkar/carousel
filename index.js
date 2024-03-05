@@ -35,7 +35,7 @@ leftArrow.addEventListener("click", function () {
   if (currentIndex < 0) {
     currentIndex = arr.length - 1;
   }
-  carouselImage(currentIndex);
+  indicatorFunc(currentIndex);
 });
 
 // right arrow button function
@@ -44,19 +44,19 @@ rightArrow.addEventListener("click", function () {
   if (currentIndex === arr.length) {
     currentIndex = 0;
   }
-  carouselImage(currentIndex);
+  indicatorFunc(currentIndex);
 });
 
 // using higher order function to create multiple span tag
 arr.forEach(function (ele, ind) {
   let spanTag = document.createElement("span");
   let iTag = document.createElement("i");
-  iTag.setAttribute("class", "lni lni-circle-minus bg-cyan-300");
+  iTag.setAttribute("class", "lni lni-circle-minus font-bold");
   spanTag.setAttribute(
     "class",
     "w-[1rem] text-sm hover:text-white cursor-pointer"
   );
-  spanTag.addEventListener("click", function () {
+  iTag.addEventListener("click", function () {
     indicatorFunc(ind);
   });
   spanTag.append(iTag);
@@ -65,6 +65,15 @@ arr.forEach(function (ele, ind) {
 
 // Indicator function
 function indicatorFunc(indicatorIndex) {
+  // querySelectorAll return an array
+  let iTagArray = document.querySelectorAll(".indicator-container i");
+  // console.log(iTagArray);
+  iTagArray.forEach(function (ele, ind) {
+    ele.classList.remove("bg-white");
+  });
+
+  iTagArray[indicatorIndex].classList.add("bg-white");
+
   carouselImage(indicatorIndex);
   currentIndex = indicatorIndex;
 }
@@ -92,4 +101,5 @@ function carouselImage(index) {
     currentIndex++;
   }, 3000);
 }
-carouselImage(currentIndex);
+// carouselImage(currentIndex);
+indicatorFunc(currentIndex);
