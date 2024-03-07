@@ -74,18 +74,19 @@ function indicatorFunc(indicatorIndex) {
 
   iTagArray[indicatorIndex].classList.add("bg-white");
 
-  carouselImage(indicatorIndex);
+  carouselImage(indicatorIndex, iTagArray);
   currentIndex = indicatorIndex;
 }
 
 // carousel image function for showing images in UI
-function carouselImage(index) {
+function carouselImage(index, iTags) {
   clearInterval(intervalId);
   carouselImageContainer.innerHTML = null;
   let imgTag = document.createElement("img");
   imgTag.src = arr[index];
   imgTag.setAttribute("class", "w-full h-full");
   carouselImageContainer.append(imgTag);
+  // console.log(iTags);
 
   // applying setInterval
   intervalId = setInterval(function () {
@@ -95,6 +96,12 @@ function carouselImage(index) {
       currentIndex = 0;
     }
     let imageTag = document.createElement("img");
+// the indicator should move along with the images
+    iTags.forEach(function (ele) {
+      ele.classList.remove("bg-white");
+    });
+    iTags[currentIndex].classList.add("bg-white");
+
     imageTag.src = arr[currentIndex];
     imageTag.setAttribute("class", "w-full h-full");
     carouselImageContainer.append(imageTag);
